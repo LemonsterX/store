@@ -31,3 +31,6 @@ ADMIN_NEWS_PAGE_MAX_COUNT = 10
 
 # 设置键值及过期时间,以秒为单位
 SEND_SMS_CODE_INTERVAL = 60
+
+# 云通讯发送短信的模版ID
+SMS_CODE_TEMP_ID = 1
