@@ -10,6 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
     sms_code = serializers.CharField(label='短信验证码', write_only=True)
     allow = serializers.CharField(label='同意用户协议',  write_only=True)
 
+
     class Meta:
         model = User
         fields = ('id', 'username', 'password', 'password2', 'sms_code', 'mobile', 'allow')
@@ -79,6 +80,17 @@ class UserSerializer(serializers.ModelSerializer):
         del validated_data['allow']
         # 使用django中的用户模型类,进行创建新用户,并实现密码加密
         user = User.objects.create_user(**validated_data)
+
+        from rest_framework_jwt.settings import api_settings
+
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload)
+
+        # 增加token属性
+        user.token = token
 
         return user
 

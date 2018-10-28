@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-
+import datetime
 import os
 import sys
 
@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     # 'django.contrib.auth.models.AbstractUser',
     # 'meiduo_mall.apps.users.apps.UsersConfig',
     'users.apps.UsersConfig',
-    'meiduo_mall.apps.verifications.apps.VerificationsConfig',
+    'verifications.apps.VerificationsConfig',
+    'oauth.apps.OauthConfig',
     'rest_framework',
     'corsheaders',
 ]
@@ -140,6 +141,8 @@ STATIC_URL = '/static/'
 #     os.path.join(BASE_DIR, '')
 # ]
 
+# 设置Django框架的缓存，此处就是把Django框架的缓存设置为redis
+# (如果不做设置，Django框架的默认缓存是服务器内存)
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -155,6 +158,7 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
+    # 保存短信验证码内容
     "verify_codes": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/2",
@@ -163,10 +167,14 @@ CACHES = {
         }
     },
 }
+
+
+# 设置将session信息存储到缓存中，缓存已经设置为redis，所以session会存到redis中
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# session内存到缓存空间的名称
 SESSION_CACHE_ALIAS = "session"
 
-
+# Django框架的日志存储设置
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,  # 是否禁用已经存在的日志器
@@ -208,10 +216,29 @@ LOGGING = {
     }
 }
 
+# 输出日志
+# import logging
+# logger = logging.getLogger('django')
+# logger.info('INFO Message')
+
 REST_FRAMEWORK = {
-    # 异常处理
+    # 指定DRF框架的异常处理函数
     'EXCEPTION_HANDLER': 'meiduo_mall.utils.exceptions.exception_handler',
+    # 设置jwt认证
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 引入jwt扩展中的jwt 认证机制
+        # 之后如果客户端在请求时给服务器传递jwt token数据，此机制会校验jwt token的有效性
+        # 如果无效，会直接给客户端返回401(未认证)
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
 }
+
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+}
+
 
 # 指定Django认证系统使用我们自定义的模型类
 AUTH_USER_MODEL = 'users.User'
@@ -224,3 +251,9 @@ CORS_ORIGIN_WHITELIST = (
     'www.meiduo.site:8080',
 )
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
+
+# QQ登录参数
+QQ_CLIENT_ID = '101474184'  # 开发者应用appid
+QQ_CLIENT_SECRET = 'c6ce949e04e12ecc909ae6a8b09b637c'   # 开发者应用appkey
+QQ_REDIRECT_URI = 'http://www.meiduo.site:8080/oauth_callback.html' # 开发者应用的回调网址
+QQ_STATE = '/'  # 保存qq登录成功的跳转页面
