@@ -9,11 +9,11 @@ class UserSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(label='确认密码', write_only=True)
     sms_code = serializers.CharField(label='短信验证码', write_only=True)
     allow = serializers.CharField(label='同意用户协议',  write_only=True)
-
+    token = serializers.CharField(label='jwt token', read_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'password2', 'sms_code', 'mobile', 'allow')
+        fields = ('id', 'username', 'password', 'password2', 'sms_code', 'mobile', 'allow', 'token')
         extra_kwargs = {
             'username': {
                 'min_length': 5,

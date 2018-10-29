@@ -236,7 +236,9 @@ REST_FRAMEWORK = {
 }
 
 JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),  # 指明token的有效期
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.utils.jwt_response_payload_handler',  # # 设置jwt扩展登录视图响应数据函数
 }
 
 
@@ -255,5 +257,10 @@ CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
 # QQ登录参数
 QQ_CLIENT_ID = '101474184'  # 开发者应用appid
 QQ_CLIENT_SECRET = 'c6ce949e04e12ecc909ae6a8b09b637c'   # 开发者应用appkey
-QQ_REDIRECT_URI = 'http://www.meiduo.site:8080/oauth_callback.html' # 开发者应用的回调网址
+QQ_REDIRECT_URI = 'http://www.meiduo.site:8080/oauth_callback.html'  # 开发者应用的回调网址
 QQ_STATE = '/'  # 保存qq登录成功的跳转页面
+
+# 设置Django的认证后端类的配置项
+AUTHENTICATION_BACKENDS = [
+    'users.utils.UsernameMobileAuthBackend',
+]
