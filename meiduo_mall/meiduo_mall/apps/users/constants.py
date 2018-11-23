@@ -1,0 +1,8 @@
+# 邮箱验证链接地址有效时间: s
+VERIFY_EMAIL_TOKEN_EXPIRES = 7200
+
+# 用户创建的最大地址数量
+USER_ADDRESS_COUNTS_LIMIT = 2044
+
+# 用户浏览记录保存最多数量
+USER_BROWSING_HISTORY_COUNTS_LIMIT = 5

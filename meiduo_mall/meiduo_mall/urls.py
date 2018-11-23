@@ -13,11 +13,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# import xadmin
 from django.conf.urls import url, include
 from django.contrib import admin
 
 urlpatterns = [
+    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^admin/', admin.site.urls),
+    # url(r'xadmin/', include(xadmin.site.urls)),
     url(r'^', include('verifications.urls')),
     url(r'^', include('users.urls')),
+    url(r'^oauth/', include('oauth.urls')),
+    url(r'^', include('areas.urls')),
+    url(r'^', include('goods.urls')),
+    url(r'^', include('cart.urls')),
+    url(r'^', include('orders.urls')),
+    url(r'^', include('payment.urls')),
 ]
+

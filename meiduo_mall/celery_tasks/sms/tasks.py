@@ -14,7 +14,8 @@ logger = logging.getLogger('django')
 def send_sms_code(mobile, sms_code, expires):
     print('发送短信任务函数被调用[mobile: %s sms_code: %s]' % (mobile, sms_code))
     try:
-        res = CCP().send_template_sms(mobile, [sms_code, expires], SMS_CODE_TEMP_ID)
+        ccp = CCP()
+        res = ccp.send_template_sms(mobile, [sms_code, expires], SMS_CODE_TEMP_ID)
     except Exception as e:
         logger.error("发送验证码短信[异常][ mobile: %s, message: %s ]" % (mobile, e))
     else:
